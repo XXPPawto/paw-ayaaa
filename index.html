@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paw & Dedee — The Amazing Love Story 🕷️</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --red: #E8192C;
+  --red-dark: #B5001F;
+  --red-glow: rgba(232, 25, 44, 0.4);
+  --navy: #0A0E1A;
+  --navy2: #111827;
+  --navy3: #1C2540;
+  --blue-accent: #1E3A8A;
+  --blue-bright: #2563EB;
+  --silver: #CBD5E1;
+  --silver-dim: #64748B;
+  --white: #F8FAFC;
+  --web-line: rgba(255,255,255,0.07);
+  --card-bg: rgba(28, 37, 64, 0.85);
+  --glow-red: 0 0 24px rgba(232,25,44,0.5);
+  --glow-blue: 0 0 20px rgba(37,99,235,0.4);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='12' fill='%23E8192C' stroke='%23fff' stroke-width='1.5'/%3E%3Cellipse cx='14' cy='14' rx='5' ry='12' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3Cellipse cx='14' cy='14' rx='12' ry='5' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3Ccircle cx='14' cy='14' r='2.5' fill='%23fff'/%3E%3C/svg%3E") 14 14, auto;
+}
+
+/* Canvases */
+#web-canvas, #rain-canvas {
+  position:fixed; top:0; left:0;
+  pointer-events:none; z-index:0;
+}
+#web-canvas { opacity:0.15; }
+#rain-canvas { opacity:0.45; z-index:1; }
+
+/* Nav */
+nav {
+  position:fixed; top:18px; left:50%; transform:translateX(-50%);
+  z-index:1000;
+  background:rgba(10,14,26,0.88);
+  backdrop-filter:blur(16px);
+  border-radius:50px;
+  padding:10px 28px;
+  display:flex; gap:22px;
+  border:1px solid rgba(232,25,44,0.3);
+  box-shadow:0 4px 24px rgba(0,0,0,0.5);
+}
+nav a {
+  text-decoration:none; color:var(--silver-dim);
+  font-size:0.74rem; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase;
+  transition:color 0.3s;
+}
+nav a:hover { color:var(--red); }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translateY(38px); transition:opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* Section base */
+section {
+  position:relative; z-index:10;
+  padding:100px 20px; min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.section-eyebrow {
+  font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--red); margin-bottom:10px; font-weight:600;
+}
+.big-heading {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.2rem,6vw,4.5rem);
+  letter-spacing:0.05em; color:var(--white); text-align:center;
+}
+.big-heading span { color:var(--red); }
+
+/* ====== HERO ====== */
+#hero {
+  background:radial-gradient(ellipse at 50% 40%, var(--navy3) 0%, var(--navy) 70%);
+  text-align:center; gap:0; overflow:hidden;
+}
+#hero::before {
+  content:'🕷️'; position:absolute;
+  font-size:45vw; opacity:0.022;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none; z-index:0; filter:grayscale(1);
+}
+.hero-tag {
+  font-size:0.75rem; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--red); margin-bottom:14px; font-weight:700;
+  position:relative; z-index:2;
+}
+.hero-tag::before,.hero-tag::after { content:'—'; margin:0 8px; opacity:0.5; }
+.hero-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,12vw,9rem);
+  line-height:0.9; color:var(--white); letter-spacing:0.03em;
+  position:relative; z-index:2;
+  text-shadow:0 0 60px rgba(232,25,44,0.2);
+}
+.hero-title span { color:var(--red); }
+.hero-sub {
+  font-family:'Caveat',cursive;
+  font-size:clamp(1.1rem,3.5vw,1.9rem);
+  color:var(--silver-dim); margin:12px 0 28px;
+  position:relative; z-index:2;
+}
+.polaroid-wrap { position:relative; width:200px; margin:0 auto 32px; z-index:2; }
+.polaroid {
+  background:#fff; padding:12px 12px 44px;
+  box-shadow:6px 10px 40px rgba(0,0,0,0.6);
+  transform:rotate(-2.5deg); transition:transform 0.4s ease, box-shadow 0.4s;
+  border-radius:3px;
+}
+.polaroid:hover {
+  transform:rotate(0deg) scale(1.06);
+  box-shadow:8px 14px 50px rgba(232,25,44,0.25);
+}
+.photo-placeholder {
+  width:100%; aspect-ratio:1;
+  background:linear-gradient(135deg,var(--navy3),var(--blue-accent));
+  display:flex; align-items:center; justify-content:center;
+  font-size:3rem; border-radius:2px;
+}
+.polaroid-caption {
+  font-family:'Caveat',cursive; text-align:center;
+  font-size:1rem; color:#555;
+  position:absolute; bottom:10px; width:100%; left:0;
+}
+.date-badge {
+  display:inline-block;
+  background:rgba(232,25,44,0.1); border:1px solid rgba(232,25,44,0.3);
+  border-radius:4px; padding:6px 18px;
+  font-size:0.78rem; letter-spacing:0.12em; color:var(--red);
+  font-weight:600; margin-bottom:22px; position:relative; z-index:2;
+}
+.hero-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--red); color:white; border:none;
+  padding:16px 38px; border-radius:4px;
+  font-family:'Poppins',sans-serif; font-size:0.88rem;
+  font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; text-decoration:none;
+  box-shadow:var(--glow-red), 4px 4px 0 var(--red-dark);
+  transition:all 0.25s; position:relative; z-index:2;
+}
+.hero-btn:hover {
+  transform:translate(-2px,-2px);
+  box-shadow:0 0 30px rgba(232,25,44,0.7), 6px 6px 0 var(--red-dark);
+}
+
+/* ====== ORIGIN / TIMELINE ====== */
+#origin { background:var(--navy2); gap:50px; }
+.timeline { max-width:700px; width:100%; position:relative; }
+.timeline::before {
+  content:''; position:absolute; left:28px; top:0; bottom:0; width:2px;
+  background:linear-gradient(to bottom, var(--red), var(--blue-bright), var(--red));
+  opacity:0.4;
+}
+.tl-item { display:flex; gap:28px; margin-bottom:40px; }
+.tl-dot {
+  flex-shrink:0; width:58px; height:58px; border-radius:50%;
+  background:var(--navy3); border:2px solid var(--red);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; box-shadow:var(--glow-red); z-index:1;
+}
+.tl-content {
+  background:var(--card-bg); border-radius:12px; padding:22px 24px;
+  border:1px solid rgba(255,255,255,0.06); backdrop-filter:blur(8px);
+  flex:1; border-left:3px solid var(--red);
+  transition:transform 0.3s, box-shadow 0.3s;
+}
+.tl-content:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.4); }
+.tl-date {
+  font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase;
+  color:var(--red); font-weight:700; margin-bottom:5px;
+}
+.tl-title {
+  font-family:'Bebas Neue',sans-serif; font-size:1.45rem;
+  letter-spacing:0.05em; color:var(--white); margin-bottom:7px;
+}
+.tl-text { font-size:0.87rem; color:var(--silver-dim); line-height:1.7; }
+
+/* ====== GALLERY ====== */
+#gallery { background:var(--navy); gap:50px; }
+.masonry-grid { column-count:3; column-gap:14px; max-width:960px; width:100%; }
+.masonry-item {
+  break-inside:avoid; margin-bottom:14px; position:relative;
+  border-radius:10px; overflow:hidden; cursor:pointer;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.masonry-placeholder {
+  width:100%; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg, var(--navy3), var(--blue-accent));
+  font-size:2.5rem; transition:transform 0.35s;
+}
+.masonry-item:hover .masonry-placeholder {
+  transform:scale(1.05); animation:spidey-shake 0.3s ease;
+}
+@keyframes spidey-shake {
+  0%,100%{transform:scale(1.05) rotate(0)} 25%{transform:scale(1.05) rotate(-1.5deg)} 75%{transform:scale(1.05) rotate(1.5deg)}
+}
+.masonry-overlay {
+  position:absolute; inset:0;
+  background:rgba(10,14,26,0.8);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity 0.3s; flex-direction:column; gap:6px;
+}
+.masonry-overlay span { font-family:'Caveat',cursive; font-size:1.05rem; color:var(--red); font-weight:700; }
+.masonry-item:hover .masonry-overlay { opacity:1; }
+
+#lightbox {
+  position:fixed; inset:0; background:rgba(0,0,0,0.88);
+  z-index:9999; display:none; align-items:center; justify-content:center;
+}
+#lightbox.active { display:flex; }
+#lightbox .lb-close {
+  position:absolute; top:20px; right:28px; color:white;
+  font-size:2.5rem; cursor:pointer; transition:color 0.2s;
+}
+#lightbox .lb-close:hover { color:var(--red); }
+
+/* ====== GAME ====== */
+#game { background:var(--navy2); gap:44px; }
+.game-area { max-width:580px; width:100%; text-align:center; }
+.question-card {
+  background:var(--card-bg); border-radius:16px; padding:32px;
+  margin-bottom:24px; border:1px solid rgba(255,255,255,0.07);
+  border-top:3px solid var(--red); backdrop-filter:blur(8px);
+}
+.q-number { font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--red); font-weight:700; margin-bottom:12px; }
+.q-text { font-size:1.05rem; font-weight:600; margin-bottom:24px; color:var(--white); line-height:1.55; }
+.options-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.opt-btn {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; padding:14px 12px;
+  font-family:'Poppins',sans-serif; font-size:0.85rem;
+  cursor:pointer; color:var(--silver); font-weight:500;
+  transition:all 0.25s; text-align:left;
+}
+.opt-btn:hover { background:rgba(232,25,44,0.15); border-color:var(--red); color:var(--white); transform:scale(1.03); }
+.opt-btn.correct { background:rgba(34,197,94,0.2); border-color:#22c55e; color:#86efac; }
+.opt-btn.wrong { background:rgba(232,25,44,0.2); border-color:var(--red); color:#fca5a5; }
+.opt-btn:disabled { cursor:default; }
+.score-display { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:0.08em; color:var(--red); margin-bottom:18px; }
+.reset-btn {
+  background:transparent; border:2px solid var(--blue-bright);
+  border-radius:6px; padding:12px 32px;
+  font-family:'Poppins',sans-serif; font-weight:700; font-size:0.88rem;
+  cursor:pointer; color:var(--blue-bright);
+  text-transform:uppercase; letter-spacing:0.1em;
+  transition:all 0.3s; display:none; margin:0 auto;
+}
+.reset-btn:hover { background:var(--blue-bright); color:white; box-shadow:var(--glow-blue); }
+
+.game-popup { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:8888; display:none; align-items:center; justify-content:center; }
+.game-popup.active { display:flex; }
+.game-popup-inner {
+  background:var(--navy2); border:1px solid rgba(232,25,44,0.3);
+  border-radius:20px; padding:40px 36px; text-align:center;
+  max-width:340px; width:90%;
+  box-shadow:0 24px 80px rgba(0,0,0,0.6), var(--glow-red);
+  animation:popup-in 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popup-in { from{transform:scale(0.5);opacity:0;} to{transform:scale(1);opacity:1;} }
+.popup-emoji { font-size:4rem; margin-bottom:14px; display:block; animation:dance 0.6s ease infinite alternate; }
+@keyframes dance { from{transform:rotate(-10deg) scale(1);} to{transform:rotate(10deg) scale(1.1);} }
+.popup-title { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.05em; color:var(--red); margin-bottom:8px; }
+.popup-msg { font-size:0.88rem; color:var(--silver-dim); line-height:1.6; margin-bottom:20px; white-space:pre-line; }
+.popup-close-btn {
+  background:var(--red); border:none; color:white;
+  padding:10px 28px; border-radius:6px; cursor:pointer;
+  font-family:'Poppins',sans-serif; font-weight:700;
+  font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.popup-close-btn:hover { transform:scale(1.05); box-shadow:var(--glow-red); }
+
+/* ====== LOVE NOTES ====== */
+#lovenotes { background:var(--navy); gap:44px; position:relative; overflow:hidden; }
+#lovenotes-web { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; opacity:0.07; }
+.envelopes-area { display:flex; gap:24px; flex-wrap:wrap; justify-content:center; position:relative; z-index:2; }
+.envelope-btn {
+  background:var(--card-bg); border:1px solid rgba(232,25,44,0.2);
+  border-radius:14px; padding:24px 28px;
+  cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  transition:all 0.3s; backdrop-filter:blur(8px);
+}
+.envelope-btn:hover { border-color:var(--red); transform:translateY(-8px) rotate(-2deg); box-shadow:var(--glow-red); }
+.envelope-icon { font-size:2.8rem; }
+.envelope-label { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--silver-dim); font-weight:600; }
+
+.note-modal { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:7777; display:none; align-items:center; justify-content:center; }
+.note-modal.active { display:flex; }
+.note-card {
+  background:var(--navy2); border:1px solid rgba(232,25,44,0.3);
+  border-radius:20px; padding:44px 40px; max-width:420px; width:90%;
+  text-align:center; box-shadow:0 24px 80px rgba(0,0,0,0.6), var(--glow-red);
+  position:relative; animation:popup-in 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.note-card::before { content:'💌'; position:absolute; top:-28px; left:50%; transform:translateX(-50%); font-size:3rem; }
+.note-card p { font-family:'Caveat',cursive; font-size:1.42rem; color:var(--white); line-height:1.65; margin-bottom:24px; }
+.note-card-close {
+  background:var(--red); border:none; color:white;
+  padding:11px 28px; border-radius:6px; cursor:pointer;
+  font-weight:700; font-family:'Poppins',sans-serif;
+  font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;
+}
+
+/* ====== LOVE REASON ====== */
+.love-reason-section {
+  background:var(--navy2); width:100%;
+  padding:70px 20px; text-align:center;
+  position:relative; z-index:10;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.love-reason-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,5vw,3.5rem); letter-spacing:0.06em; color:var(--white); margin-bottom:6px; }
+.love-reason-title span { color:var(--red); }
+.love-reason-sub { font-size:0.85rem; color:var(--silver-dim); margin-bottom:28px; }
+.love-reason-btn {
+  background:transparent; border:2px solid var(--red); color:var(--red);
+  padding:14px 36px; border-radius:6px;
+  font-family:'Poppins',sans-serif; font-size:0.9rem;
+  font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; transition:all 0.3s; margin-bottom:32px;
+}
+.love-reason-btn:hover { background:var(--red); color:white; box-shadow:var(--glow-red); transform:scale(1.04); }
+.love-reason-text {
+  font-family:'Caveat',cursive; font-size:1.7rem; color:var(--white);
+  max-width:540px; margin:0 auto; min-height:54px;
+  transition:opacity 0.4s, transform 0.4s; line-height:1.4;
+}
+.love-reason-text.fade { opacity:0; transform:translateY(12px); }
+
+/* ====== COUNTDOWN ====== */
+.countdown-section {
+  background:radial-gradient(ellipse at 50% 50%, var(--navy3) 0%, var(--navy) 80%);
+  width:100%; padding:70px 20px; text-align:center;
+  position:relative; z-index:10;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.countdown-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,5vw,3.5rem); letter-spacing:0.06em; color:var(--white); margin-bottom:6px; }
+.countdown-title span { color:var(--red); }
+.countdown-sub { font-family:'Caveat',cursive; font-size:1.1rem; color:var(--silver-dim); margin-bottom:36px; }
+.countdown-grid { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.countdown-unit {
+  background:var(--card-bg); border:1px solid rgba(232,25,44,0.2);
+  border-radius:12px; padding:22px 26px; min-width:96px;
+  backdrop-filter:blur(8px);
+}
+.countdown-num { font-family:'Bebas Neue',sans-serif; font-size:3rem; color:var(--red); line-height:1; text-shadow:var(--glow-red); }
+.countdown-label { font-size:0.7rem; color:var(--silver-dim); font-weight:600; margin-top:4px; text-transform:uppercase; letter-spacing:0.12em; }
+
+/* ====== MUSIC PLAYER ====== */
+#music-player {
+  position:fixed; bottom:100px; left:20px;
+  background:rgba(10,14,26,0.92); backdrop-filter:blur(12px);
+  border:1px solid rgba(232,25,44,0.25); border-radius:50px;
+  padding:10px 18px; display:flex; align-items:center; gap:10px;
+  z-index:1000; cursor:pointer; transition:transform 0.3s, box-shadow 0.3s;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+#music-player:hover { transform:scale(1.05); box-shadow:var(--glow-red); }
+.music-icon { font-size:1.2rem; animation:spin-music 3s linear infinite; }
+#music-player.paused .music-icon { animation-play-state:paused; }
+@keyframes spin-music { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+.music-title { font-size:0.7rem; font-weight:700; color:var(--white); }
+.music-artist { font-size:0.62rem; color:var(--silver-dim); }
+#play-btn {
+  background:var(--red); border:none; border-radius:50%;
+  width:30px; height:30px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.75rem; color:white; transition:background 0.3s;
+}
+#play-btn:hover { background:var(--red-dark); }
+
+/* ====== EMERGENCY BUTTON ====== */
+#emergency-btn {
+  position:fixed; bottom:24px; right:24px; z-index:1000;
+  background:var(--red); border:none; border-radius:50%;
+  width:62px; height:62px; cursor:pointer;
+  box-shadow:var(--glow-red), 0 6px 24px rgba(0,0,0,0.5);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.6rem; transition:transform 0.3s;
+  animation:pulse-spidey 2s ease infinite;
+}
+#emergency-btn:hover { transform:scale(1.18); }
+@keyframes pulse-spidey {
+  0%,100% { box-shadow:0 0 0 0 rgba(232,25,44,0.5), 0 6px 24px rgba(0,0,0,0.5); }
+  50% { box-shadow:0 0 0 14px rgba(232,25,44,0), 0 6px 24px rgba(0,0,0,0.5); }
+}
+
+/* ====== FOOTER ====== */
+footer {
+  background:var(--navy); border-top:1px solid rgba(255,255,255,0.05);
+  text-align:center; padding:36px 20px; position:relative; z-index:10;
+}
+.footer-text { font-family:'Caveat',cursive; font-size:1.3rem; color:var(--silver-dim); }
+.footer-text span { color:var(--red); }
+.footer-icons { margin-top:10px; font-size:1.2rem; letter-spacing:6px; opacity:0.5; }
+footer small { display:block; margin-top:10px; font-size:0.68rem; color:var(--silver-dim); opacity:0.4; }
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:768px){
+  nav { gap:12px; padding:8px 18px; }
+  nav a { font-size:0.65rem; }
+  .masonry-grid { column-count:2; }
+  .tl-content { padding:16px 18px; }
+  .countdown-unit { min-width:72px; padding:16px 14px; }
+  .countdown-num { font-size:2rem; }
+  #music-player { bottom:100px; }
+}
+@media(max-width:480px){
+  nav { display:none; }
+  .masonry-grid { column-count:1; }
+  .options-grid { grid-template-columns:1fr; }
+  .envelopes-area { gap:14px; }
+  .tl-item { gap:16px; }
+  .tl-dot { width:44px; height:44px; font-size:1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="web-canvas"></canvas>
+<canvas id="rain-canvas"></canvas>
+
+<nav>
+  <a href="#hero">Home</a>
+  <a href="#origin">Story</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#game">Game</a>
+  <a href="#lovenotes">Notes</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="hero">
+  <p class="hero-tag reveal">The Amazing Love Story</p>
+  <h1 class="hero-title reveal" style="transition-delay:0.1s">
+    Paw <span>&</span><br>Dedee
+  </h1>
+  <p class="hero-sub reveal" style="transition-delay:0.2s">"With great love comes great courage." 🕷️</p>
+
+  <div class="polaroid-wrap reveal" style="transition-delay:0.3s">
+    <div class="polaroid">
+      <img src="image/fotokita.jpeg" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px;">
+      <div class="photo-placeholder">🕷️❤️</div>
+      <span class="polaroid-caption">Paw & Dedee Aya 💕</span>
+    </div>
+  </div>
+
+  <div class="date-badge reveal" style="transition-delay:0.4s">🗓️ Jadian sejak 17 November 2025</div>
+
+  <a href="#origin" class="hero-btn reveal" style="transition-delay:0.5s">
+    Lihat Kisah Kita 🕸️
+  </a>
+</section>
+
+<!-- ========== ORIGIN STORY ========== -->
+<section id="origin">
+  <p class="section-eyebrow reveal">Chapter 01</p>
+  <h2 class="big-heading reveal" style="transition-delay:0.1s">Our <span>Origin</span> Story</h2>
+  <p class="reveal" style="color:var(--silver-dim);margin-bottom:48px;font-size:0.9rem;text-align:center;transition-delay:0.15s;max-width:500px">
+    Kisah cinta yang butuh kesabaran ekstra — tapi worth it banget 🥹
+  </p>
+
+  <div class="timeline">
+
+    <div class="tl-item reveal">
+      <div class="tl-dot">📚</div>
+      <div class="tl-content">
+        <p class="tl-date">2024 — Perpustakaan</p>
+        <h3 class="tl-title">Jatuh Cinta di Antara Buku</h3>
+        <p class="tl-text">Pertama kali ngeliat Dedee Aya di perpustakaan, entah kenapa langsung ada yang berasa beda banget. Jantung udah nggak karuan, tapi cuma diam — ngependem sendiri kayak Peter Parker sebelum jadi Spider-Man. Perasaan itu cuma buat Abang yang tau. 🤍</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal" style="transition-delay:0.1s">
+      <div class="tl-dot">💔</div>
+      <div class="tl-content">
+        <p class="tl-date">Masih 2024 — Plot Twist</p>
+        <h3 class="tl-title">Keduluan. Sakit Banget.</h3>
+        <p class="tl-text">Nggak disangka, ada yang duluan masuk ke hati Dedee. Itu momen paling berat — kayak Spidey yang lagi nggak bisa ngapa-ngapain. Tapi perasaan Abang ke Dedee nggak kemana-mana. Tetap dipendem, tetap bersabar. 🕸️</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal" style="transition-delay:0.15s">
+      <div class="tl-dot">📱</div>
+      <div class="tl-content">
+        <p class="tl-date">Agustus 2025 — IG Story</p>
+        <h3 class="tl-title">Confess Lewat Story</h3>
+        <p class="tl-text">Akhirnya setelah hampir setahun ngependem, Abang beraniin diri buat confess lewat Instagram story. Dag-dig-dug pol. Responsmu waktu itu belum se-welcome yang Abang harapin. Sakit? Iya. Tapi Abang nggak menyerah. 💪</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal" style="transition-delay:0.2s">
+      <div class="tl-dot">🌸</div>
+      <div class="tl-content">
+        <p class="tl-date">Oktober 2025 — Story Kedua</p>
+        <h3 class="tl-title">Kamu Mulai Welcome</h3>
+        <p class="tl-text">Abang buat story lagi. Dan kali ini — Dedee beda. Ada sesuatu yang berubah. Kamu mulai welcome, dan itu udah cukup buat bikin semua galau itu terbayar lunas. Sinyal hijau pertama. 🟢</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal" style="transition-delay:0.25s">
+      <div class="tl-dot">💬</div>
+      <div class="tl-content">
+        <p class="tl-date">2 November 2025</p>
+        <h3 class="tl-title">Chatting Intens Dimulai</h3>
+        <p class="tl-text">Tanggal 2 November kita mulai chatting intens. Nggak kerasa tiap hari makin asik, makin dekat, makin susah buat nggak senyum-senyum sendiri liat notif dari Dedee. Dua minggu yang paling menyenangkan. 📲❤️</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal" style="transition-delay:0.3s">
+      <div class="tl-dot">🕷️</div>
+      <div class="tl-content">
+        <p class="tl-date">17 November 2025 — THE DAY ✨</p>
+        <h3 class="tl-title">Abang Tembak, Dedee Terima 🎯</h3>
+        <p class="tl-text">Ini hari paling bersejarah. Abang beraniin diri buat nembak — dan kamu bilang iya. Rasanya kayak Spider-Man baru dapet kekuatan baru. <strong style="color:var(--red)">Alya Adhwa Faizah — dari hari itu, kamu resmi jadi Dedee Aya-ku selamanya. 💘</strong></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== GALLERY ========== -->
+<section id="gallery">
+  <p class="section-eyebrow reveal">Web of Memories</p>
+  <h2 class="big-heading reveal" style="transition-delay:0.1s">Galeri <span>Kita</span> 📸</h2>
+  <p class="reveal" style="color:var(--silver-dim);margin-bottom:40px;font-size:0.88rem;text-align:center;transition-delay:0.15s">
+    Hover foto untuk Spidey-sense · Klik untuk zoom 🔍
+  </p>
+
+  <div class="masonry-grid reveal" style="transition-delay:0.2s">
+    <!-- GANTI placeholder di bawah dengan foto asli kalian!
+         Contoh: <div class="masonry-item" onclick="openLightbox(this)">
+                   <img src="foto1.jpg" style="width:100%;display:block;">
+                   <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+                 </div> -->
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto1.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    </div>
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto2.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    </div>
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto3.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    </div>
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto4.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    </div>
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto5.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    </div>
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto6.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    <div class="masonry-item" onclick="openLightbox(this)">
+     <img src="image/foto7.jpeg" style="width:100%;display:block;">
+     <div class="masonry-overlay"><span>🕸️ Spidey-sense tingling!</span></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div id="lightbox">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <div style="text-align:center">
+    <div style="font-size:6rem">📸</div>
+    <p style="color:var(--silver-dim);font-family:'Caveat',cursive;font-size:1.4rem;margin-top:16px">Ganti dengan foto kenangan kalian! 💕</p>
+  </div>
+</div>
+
+<!-- ========== GAME ========== -->
+<section id="game">
+  <p class="section-eyebrow reveal">Mini Game</p>
+  <h2 class="big-heading reveal" style="transition-delay:0.1s">Uji <span>Spidey-sense</span> Kamu!</h2>
+  <p class="reveal" style="color:var(--silver-dim);margin-bottom:36px;font-size:0.88rem;text-align:center;transition-delay:0.15s">
+    Dedee Aya, seberapa tau kamu tentang kisah kita? 🕷️
+  </p>
+  <div class="game-area reveal" style="transition-delay:0.2s">
+    <div class="score-display" id="score-display">⭐ SKOR: 0 POIN CINTA</div>
+    <div id="question-container"></div>
+    <button class="reset-btn" id="reset-btn" onclick="resetGame()">🔄 Main Lagi!</button>
+  </div>
+</section>
+
+<div class="game-popup" id="game-popup">
+  <div class="game-popup-inner">
+    <span class="popup-emoji" id="popup-emoji">🕷️</span>
+    <h3 class="popup-title" id="popup-title">Yay!</h3>
+    <p class="popup-msg" id="popup-msg">pesan</p>
+    <div style="font-size:1.4rem;letter-spacing:4px;margin-bottom:14px" id="popup-hearts">💕</div>
+    <button class="popup-close-btn" onclick="closePopup()">Lanjut! 🕸️</button>
+  </div>
+</div>
+
+<!-- ========== LOVE NOTES ========== -->
+<section id="lovenotes">
+  <svg id="lovenotes-web" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+    <g stroke="white" stroke-width="1" fill="none">
+      <line x1="400" y1="0" x2="400" y2="500"/><line x1="0" y1="250" x2="800" y2="250"/>
+      <line x1="0" y1="0" x2="800" y2="500"/><line x1="800" y1="0" x2="0" y2="500"/>
+      <ellipse cx="400" cy="250" rx="100" ry="100"/>
+      <ellipse cx="400" cy="250" rx="200" ry="160"/>
+      <ellipse cx="400" cy="250" rx="320" ry="220"/>
+    </g>
+  </svg>
+
+  <p class="section-eyebrow reveal" style="position:relative;z-index:2">Love Notes</p>
+  <h2 class="big-heading reveal" style="transition-delay:0.1s;position:relative;z-index:2">
+    Surat <span>Rahasia</span> Untukmu 💌
+  </h2>
+  <p class="reveal" style="color:var(--silver-dim);margin-bottom:40px;font-size:0.88rem;text-align:center;transition-delay:0.15s;position:relative;z-index:2">
+    Klik amplop untuk buka, Dedee Aya~ 🔐
+  </p>
+  <div class="envelopes-area reveal" style="transition-delay:0.2s">
+    <button class="envelope-btn" onclick="openNote(0)"><span class="envelope-icon">💌</span><span class="envelope-label">Surat #1</span></button>
+    <button class="envelope-btn" onclick="openNote(1)"><span class="envelope-icon">💌</span><span class="envelope-label">Surat #2</span></button>
+    <button class="envelope-btn" onclick="openNote(2)"><span class="envelope-icon">💌</span><span class="envelope-label">Surat #3</span></button>
+    <button class="envelope-btn" onclick="openNote(3)"><span class="envelope-icon">💌</span><span class="envelope-label">Surat #4</span></button>
+    <button class="envelope-btn" onclick="openNote(4)"><span class="envelope-icon">💌</span><span class="envelope-label">Surat #5</span></button>
+  </div>
+</section>
+
+<div class="note-modal" id="note-modal">
+  <div class="note-card">
+    <p id="note-text"></p>
+    <button class="note-card-close" onclick="closeNote()">Tutup 💕</button>
+  </div>
+</div>
+
+<!-- ========== LOVE REASON ========== -->
+<div class="love-reason-section">
+  <h2 class="love-reason-title reveal">Butuh <span>Senyum</span>?</h2>
+  <p class="love-reason-sub reveal" style="transition-delay:0.1s">Khusus buat Dedee Aya, dari Abang 🌸</p>
+  <button class="love-reason-btn reveal" style="transition-delay:0.15s" onclick="showReason()">
+    Klik kalau kamu butuh senyum 😊
+  </button>
+  <p class="love-reason-text reveal" id="reason-text" style="transition-delay:0.2s">✨ Klik tombol di atas ✨</p>
+</div>
+
+<!-- ========== COUNTDOWN ========== -->
+<div class="countdown-section">
+  <h2 class="countdown-title reveal">Anniversary <span>Countdown</span></h2>
+  <p class="countdown-sub reveal" style="transition-delay:0.1s">Menuju 17 November — hari paling bersejarah kita 🕷️</p>
+  <div class="countdown-grid reveal" style="transition-delay:0.2s">
+    <div class="countdown-unit"><div class="countdown-num" id="cd-days">--</div><div class="countdown-label">Hari</div></div>
+    <div class="countdown-unit"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-label">Jam</div></div>
+    <div class="countdown-unit"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-label">Menit</div></div>
+    <div class="countdown-unit"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Detik</div></div>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <p class="footer-text">Made with <span>❤️</span> by your Friendly Neighborhood Boyfriend, <span>Paw.</span></p>
+  <div class="footer-icons">🕷️ ❤️ 🕸️ 💘 🕷️</div>
+  <small>© 2025 Paw & Alya Adhwa Faizah (Dedee Aya) — Our Web of Love</small>
+</footer>
+
+<!-- ========== FLOATING ========== -->
+<div id="music-player" class="paused" onclick="toggleMusic()">
+  <span class="music-icon">🎵</span>
+  <div><div class="music-title">Our Song ❤️</div><div class="music-artist">Can't Help Falling in Love</div></div>
+  <button id="play-btn">▶</button>
+  <audio id="bg-music" loop>
+    <!-- Tambahkan: <source src="lagu-kita.mp3" type="audio/mpeg"> -->
+  </audio>
+</div>
+
+<!-- GANTI waNumber di CONFIG dengan nomor WA Dedee Aya (628xxx) -->
+<button id="emergency-btn" onclick="emergencyKangen()" title="Emergency Kangen! 💕">🕸️</button>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+const CONFIG = {
+  waNumber: '6285163544535',  // GANTI nomor WA Alya Adhwa Faizah (format 628xxx)
+  waMessage: 'Abang, Dedee kangen nih, butuh diselamatkan! 🕸️❤️',
+  anniversaryDate: new Date('2025-11-17T00:00:00'),
+};
+
+const LOVE_NOTES = [
+  "Dedee Aya, kamu nggak tau betapa bersyukurnya Abang karena sabar ngependem perasaan itu — sampai akhirnya kamu bilang iya. Itu keputusan yang paling bikin Abang bahagia seumur hidup. 🕷️❤️",
+  "Dari perpustakaan 2024 sampai hari ini — perjalanan kita panjang banget. Tapi setiap langkahnya worth it. Alya Adhwa Faizah, kamu adalah yang Abang tunggu selama ini. 💘",
+  "Kamu lebih indah dari New York dilihat dari atas gedung pencakar langit. Dan Abang mau terus di sisimu — nggak peduli seberapa tinggi kita harus terbang bersama. 🕸️🌃",
+  "Waktu kamu akhirnya welcome ke Abang di Oktober itu, rasanya kayak Spider-Man dapet kekuatan barunya. Terima kasih udah mau kasih Abang kesempatan. Abang nggak akan pernah sia-siain. 💪❤️",
+  "17 November 2025 — tanggal yang bakal Abang inget selamanya. Hari di mana kamu bilang iya dan jadi Dedee Ayaku. I love you more than words can web. 🕷️💕"
+];
+
+const LOVE_REASONS = [
+  "Karena kamu ada di perpustakaan hari itu — dan itu cukup buat Abang jatuh cinta 📚",
+  "Karena kamu sabar dengerin cerita Abang yang panjang lebar tanpa bosen 😌",
+  "Karena senyummu bisa bikin Abang lupa lagi galau soal apa 🥰",
+  "Karena kamu nggak langsung iya tapi akhirnya iya juga — dan itu bikin semuanya makin berharga 💘",
+  "Karena chatting sama kamu dari tanggal 2 November itu nggak pernah berasa cukup ❤️",
+  "Karena kamu Dedee Aya-nya Abang sekarang, dan itu hal terbaik yang pernah terjadi 🕷️",
+  "Karena cara kamu ngetik itu lucu banget dan Abang nggak bisa jelasin kenapa 😂",
+  "Karena kamu bikin Abang ngerasa jadi superhero padahal lagi rebahan doang 🦸",
+  "Karena Abang udah pendem setahun lebih dan kamu worth every second of it ⏰",
+  "Karena nama lengkapmu — Alya Adhwa Faizah — terdengar kayak nama karakter utama cerita favorit 🌟",
+  "Karena kamu ada di dunia yang sama dengan Abang, dan itu udah cukup bikin bersyukur 🌍",
+  "Karena tiap hari sama kamu terasa kayak petualangan baru yang pengen terus diceritain 🕸️"
+];
+
+const QUESTIONS = [
+  {
+    q: "Di mana Abang pertama kali ketemu Dedee Aya?",
+    options: ["A. Kantin 🍜", "B. Perpustakaan 📚", "C. Kelas 🎓", "D. Instagram 📱"],
+    correct: 1,
+    hint: "Tempat yang penuh buku dan awal dari segalanya..."
+  },
+  {
+    q: "Kapan Abang pertama kali confess ke Dedee?",
+    options: ["A. Jan 2025", "B. Agustus 2025 📱", "C. Oktober 2025", "D. November 2025"],
+    correct: 1,
+    hint: "Lewat Instagram story, dag-dig-dug banget waktu itu 😅"
+  },
+  {
+    q: "Tanggal berapa kita resmi jadian?",
+    options: ["A. 2 November 💬", "B. 7 November", "C. 17 November 🎯", "D. 20 November"],
+    correct: 2,
+    hint: "Tanggal paling bersejarah dalam hidup Abang 💘"
+  }
+];
+
+// ===== WEB CANVAS =====
+const webCanvas = document.getElementById('web-canvas');
+const wCtx = webCanvas.getContext('2d');
+function drawWebBg() {
+  webCanvas.width = window.innerWidth;
+  webCanvas.height = window.innerHeight;
+  const cx = webCanvas.width/2, cy = webCanvas.height/2;
+  const maxR = Math.max(cx,cy)*1.5;
+  wCtx.clearRect(0,0,webCanvas.width,webCanvas.height);
+  wCtx.strokeStyle='rgba(255,255,255,1)'; wCtx.lineWidth=0.8;
+  for(let a=0;a<360;a+=20){
+    const r=a*Math.PI/180;
+    wCtx.beginPath(); wCtx.moveTo(cx,cy);
+    wCtx.lineTo(cx+Math.cos(r)*maxR, cy+Math.sin(r)*maxR);
+    wCtx.stroke();
+  }
+  for(let r=60;r<maxR;r+=80){
+    wCtx.beginPath();
+    wCtx.ellipse(cx,cy,r,r*0.62,0,0,Math.PI*2);
+    wCtx.stroke();
+  }
+}
+drawWebBg();
+window.addEventListener('resize',drawWebBg);
+
+// ===== RAIN =====
+const rainCanvas = document.getElementById('rain-canvas');
+const rCtx = rainCanvas.getContext('2d');
+function resizeRain(){ rainCanvas.width=window.innerWidth; rainCanvas.height=window.innerHeight; }
+resizeRain(); window.addEventListener('resize',resizeRain);
+const drops = Array.from({length:90},()=>({
+  x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight,
+  speed:1.2+Math.random()*2.2, size:1+Math.random()*1.8,
+  opacity:0.15+Math.random()*0.35,
+  color:Math.random()>0.5?'#E8192C':'#2563EB'
+}));
+function drawRain(){
+  rCtx.clearRect(0,0,rainCanvas.width,rainCanvas.height);
+  drops.forEach(d=>{
+    rCtx.beginPath(); rCtx.arc(d.x,d.y,d.size,0,Math.PI*2);
+    rCtx.fillStyle=d.color; rCtx.globalAlpha=d.opacity; rCtx.fill();
+    d.y+=d.speed;
+    if(d.y>rainCanvas.height){ d.y=-10; d.x=Math.random()*rainCanvas.width; }
+  });
+  rCtx.globalAlpha=1; requestAnimationFrame(drawRain);
+}
+drawRain();
+
+// ===== SCROLL REVEAL =====
+const revealEls=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+revealEls.forEach(el=>io.observe(el));
+
+// ===== LIGHTBOX =====
+function openLightbox(){ document.getElementById('lightbox').classList.add('active'); }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('active'); }
+document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLightbox();});
+
+// ===== GAME =====
+let currentQ=0, score=0;
+function renderQuestion(){
+  const c=document.getElementById('question-container');
+  if(currentQ>=QUESTIONS.length){endGame();return;}
+  const q=QUESTIONS[currentQ];
+  c.innerHTML=`<div class="question-card">
+    <p class="q-number">Pertanyaan ${currentQ+1} / ${QUESTIONS.length}</p>
+    <p class="q-text">${q.q}</p>
+    <div class="options-grid">${q.options.map((o,i)=>`<button class="opt-btn" onclick="answerQ(${i})">${o}</button>`).join('')}</div>
+  </div>`;
+}
+function answerQ(idx){
+  const q=QUESTIONS[currentQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(b=>b.disabled=true);
+  if(idx===q.correct){ btns[idx].classList.add('correct'); score+=100; document.getElementById('score-display').textContent=`⭐ SKOR: ${score} POIN CINTA`; showPopup(true); }
+  else { btns[idx].classList.add('wrong'); btns[q.correct].classList.add('correct'); showPopup(false,q.hint); }
+  setTimeout(()=>{ currentQ++; renderQuestion(); },1900);
+}
+function endGame(){
+  const all=score===QUESTIONS.length*100;
+  document.getElementById('question-container').innerHTML=`<div class="question-card" style="border-top-color:${all?'#22c55e':'var(--blue-bright)'}">
+    <span style="font-size:3rem;display:block;margin-bottom:14px">${all?'🏆🕷️🎉':'💕🕸️'}</span>
+    <p class="q-text">${all?'SEMPURNA! Spidey-sense Dedee Aya tajam banget! Kamu tau segalanya tentang kita! +5000 poin cinta 💘':`Skor kamu: ${score} poin cinta. Nggak apa-apa — cinta kita tetap MAX! 💕`}</p>
+  </div>`;
+  document.getElementById('reset-btn').style.display='block';
+}
+function resetGame(){ currentQ=0; score=0; document.getElementById('score-display').textContent='⭐ SKOR: 0 POIN CINTA'; document.getElementById('reset-btn').style.display='none'; renderQuestion(); }
+function showPopup(correct,hint){
+  document.getElementById('popup-emoji').textContent=correct?'🕺🕷️':'😖🕸️';
+  document.getElementById('popup-title').textContent=correct?'BENAR! 🎉':'MELESET...';
+  document.getElementById('popup-msg').textContent=correct?'Spidey-sense kamu tajam! Lanjut ke pertanyaan berikutnya~':`Yah, meleset! Coba lagi ya~\nHint: ${hint||''}`;
+  document.getElementById('popup-hearts').textContent=correct?'💘💘💘💕':'🕸️🕷️😅';
+  document.getElementById('game-popup').classList.add('active');
+}
+function closePopup(){ document.getElementById('game-popup').classList.remove('active'); }
+document.getElementById('game-popup').addEventListener('click',function(e){if(e.target===this)closePopup();});
+renderQuestion();
+
+// ===== LOVE NOTES =====
+function openNote(idx){ document.getElementById('note-text').textContent=LOVE_NOTES[idx]||''; document.getElementById('note-modal').classList.add('active'); }
+function closeNote(){ document.getElementById('note-modal').classList.remove('active'); }
+document.getElementById('note-modal').addEventListener('click',function(e){if(e.target===this)closeNote();});
+
+// ===== LOVE REASON =====
+let lastReason=-1;
+function showReason(){
+  const el=document.getElementById('reason-text');
+  el.classList.add('fade');
+  setTimeout(()=>{
+    let idx; do{idx=Math.floor(Math.random()*LOVE_REASONS.length);}while(idx===lastReason);
+    lastReason=idx; el.textContent=LOVE_REASONS[idx]; el.classList.remove('fade');
+  },400);
+}
+
+// ===== COUNTDOWN =====
+function updateCountdown(){
+  const now=new Date(); let target=new Date(CONFIG.anniversaryDate);
+  while(target<=now) target.setFullYear(target.getFullYear()+1);
+  const diff=target-now;
+  const days=Math.floor(diff/86400000);
+  const hours=Math.floor((diff%86400000)/3600000);
+  const mins=Math.floor((diff%3600000)/60000);
+  const secs=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-days').textContent=String(days).padStart(2,'0');
+  document.getElementById('cd-hours').textContent=String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent=String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent=String(secs).padStart(2,'0');
+}
+updateCountdown(); setInterval(updateCountdown,1000);
+
+// ===== MUSIC =====
+const audio=document.getElementById('bg-music');
+const playBtn=document.getElementById('play-btn');
+const player=document.getElementById('music-player');
+let playing=false;
+function toggleMusic(){
+  if(!audio.src&&audio.children.length===0){ alert('💡 Tambahkan file lagu di tag <audio id="bg-music">!\nContoh: <source src="lagu-kita.mp3" type="audio/mpeg">'); return; }
+  playing=!playing;
+  playing?audio.play().catch(()=>{}):audio.pause();
+  playBtn.textContent=playing?'⏸':'▶';
+  player.classList.toggle('paused',!playing);
+}
+
+// ===== EMERGENCY =====
+function emergencyKangen(){ window.open(`https://wa.me/${CONFIG.waNumber}?text=${encodeURIComponent(CONFIG.waMessage)}`,'_blank'); }
+</script>
+</body>
+</html>
